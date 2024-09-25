@@ -1,5 +1,5 @@
 import axiosInstance from "../configs/axios";
-
+import { handleAxiosError } from "../helpers/axiosHelper";
 type LoginPayload = {
   email: string;
   password: string;
@@ -13,7 +13,7 @@ const login = async (payload: LoginPayload): Promise<boolean> => {
     });
     return true;
   } catch (error) {
-    console.log(error);
+    handleAxiosError(error);
     return false;
   }
 };

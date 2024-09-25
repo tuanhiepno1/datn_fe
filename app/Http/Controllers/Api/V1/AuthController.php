@@ -20,16 +20,17 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(
+            ['error' => 'Tài khoản hoặc mật khẩu không chính xác'],
+            Response::HTTP_UNAUTHORIZED);
         }
-        
         // Tạo cookie chứa token
-        $cookie = Cookie::make('access_token', $token, auth()->factory()->getTTL(), '/', null, false, true);
-        
+        $cookie = Cookie::make('access_token',
+        $token, 
+        auth()->factory()->getTTL(), '/', null, false, true);        
         // Trả về phản hồi với token và cookie
         return $this->respondWithToken($token)->withCookie($cookie);
     }
-
     protected function respondWithToken($token)
     {
         return response()->json([

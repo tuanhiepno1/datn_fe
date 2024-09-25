@@ -2,16 +2,24 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { login } from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+// import { useToast } from "../contexts/ToastContext";
+import { setToast } from "../redux/slice/toastSlice";
+import { useDispatch } from "react-redux";
+import { Button } from "@/components/ui/button"
 type Inputs = {
   email: string;
   password: string;
 };
 
 const Login = () => {
+  // const { setMessage } =  useToast();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+
+
+
+  const dispatch = useDispatch();
   
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
@@ -20,11 +28,10 @@ const Login = () => {
     setErrorMessage('');
     try {
       const logged = await login(payload);
-      if (logged === true) {
-        navigate('/dashboard');
-      } else {
-        setErrorMessage('Email or password is incorrect.');
-      }
+      dispatch(setToast({ message: 'Đăng nhập vào hệ thống thành công', type: 'success'}));
+      // setMessage('Đăng nhập vào hệ thống thành công', 'success'); ->> context
+      logged && navigate('/dashboard');
+      
     } catch (error) {
       setErrorMessage('An error occurred during login.');
     } finally {
@@ -33,7 +40,10 @@ const Login = () => {
   };
 
   return (
+
+    
     <div className="flex flex-col items-center justify-center min-h-screen">
+      <Button>Button</Button>
       <div className="w-full max-w-5xl flex flex-col md:flex-row p-6 bg-white rounded animate-fade-in-down">
         <div className="md:w-1/2 p-8">
           <h2 className="text-3xl font-bold mb-4">Welcome to IN+</h2>
@@ -104,6 +114,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+      
     </div>
   );
 };
