@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('status_code');
             $table->string('status_name');
             $table->timestamps();
+            
         });
     }
 
