@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   response => {
     // Ensuring response data or returning an empty object as a fallback
-    return response.data ?? {};
+    return response;
   },
   error => {
     // Optionally handle different error statuses or log errors

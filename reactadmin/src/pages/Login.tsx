@@ -2,48 +2,42 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { login } from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-// import { useToast } from "../contexts/ToastContext";
 import { setToast } from "../redux/slice/toastSlice";
 import { useDispatch } from "react-redux";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { setAuthLogin } from "../redux/slice/authSlice";
+import { Loader2 } from "lucide-react";
 type Inputs = {
   email: string;
   password: string;
 };
-
 const Login = () => {
-  // const { setMessage } =  useToast();
-  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-
-
-
   const dispatch = useDispatch();
-  
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+  const [loading, setLoading] = useState<boolean>(false); 
 
   const loginHandler: SubmitHandler<Inputs> = async (payload) => {
+    
     setLoading(true);
     setErrorMessage('');
+
     try {
-      const logged = await login(payload);
-      dispatch(setToast({ message: 'Đăng nhập vào hệ thống thành công', type: 'success'}));
-      // setMessage('Đăng nhập vào hệ thống thành công', 'success'); ->> context
-      logged && navigate('/dashboard');
-      
+      const auth = await login(payload);
+      dispatch(setToast({ message: 'Đăng nhập vào hệ thống thành công', type: 'success' }));
+      dispatch(setAuthLogin(auth));
+      auth && navigate('/dashboard');
     } catch (error) {
-      setErrorMessage('An error occurred during login.');
+      console.log(error);
+      // setErrorMessage('An error occurred during login.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-
-    
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <Button>Button</Button>
       <div className="w-full max-w-5xl flex flex-col md:flex-row p-6 bg-white rounded animate-fade-in-down">
         <div className="md:w-1/2 p-8">
           <h2 className="text-3xl font-bold mb-4">Welcome to IN+</h2>
@@ -93,14 +87,19 @@ const Login = () => {
             
             {errorMessage && <div className="text-red-500 text-sm">{errorMessage}</div>}
 
-            <button
+            {/* <button
               type="submit"
               disabled={loading}
               className={`w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 ${loading ? 'opacity-50' : ''}`}
             >
               {loading ? "Loading..." : "Đăng nhập"}
-            </button>
-
+            </button> */}
+              <Button disabled={loading} className="w-full bg-blue-500 text-white py-2 rounded-md
+             hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                {/* <Loader2 className="mr-2 h-4 w-4 animate-spin" /> */}
+                { loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {  loading ? 'Đang xử lý' : 'Đăng nhập'}
+              </Button>
             <button 
               type="button" 
               className="text-sm text-blue-500 hover:underline"
@@ -111,6 +110,7 @@ const Login = () => {
           </form>
           <p className="mt-4 text-sm text-gray-600 text-left">
             Inspinia web app framework base on Bootstrap 3 &copy; 2014
+            {/* <QRCode value="Inspinia web app framework base on Bootstrap 3 &copy; 2014" />  */}
           </p>
         </div>
       </div>
