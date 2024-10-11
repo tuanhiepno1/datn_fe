@@ -9,5 +9,9 @@ class Status extends Model
 {
 
     protected $fillable = ['status_code', 'status_name'];
-    use HasFactory;
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
 }

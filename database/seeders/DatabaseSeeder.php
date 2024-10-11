@@ -16,20 +16,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = \Faker\Factory::create();
-        
-        // for ($i = 0; $i < 30; $i++) {
-        //         Account::create([
-        //             'username' => $faker->userName,
-        //             'password' => bcrypt($faker->unique()->password),
-        //             'name' => $faker->name,
-        //             'address' => $faker->address,
-        //             'phone' => $faker->phoneNumber,
-        //             'email' => $faker->unique()->safeEmail,
-        //             // 'status_id' => $faker->numberBetween(1, 2), 
-        //             // 'role_id' => $faker->numberBetween(1, 2), 
-        //      ]);
-        // }
+         $faker = \Faker\Factory::create();
+        // User::factory()->create([
+        //     'name' => 'Huy Hoàng',
+        //     'email' => 'alo@gmail.com',
+        //     'password' => Hash::make('1234'),
+        //     'address' => 'Phường 15 Quận Tân Bình thành phố Hồ Chí Minh',
+        //     'phone' => '0941280073'
+        // ]);
+        for ($i = 0; $i < 30; $i++) {
+                Account::create([
+                    'username' => $faker->userName,
+                    'password' => bcrypt($faker->unique()->password),
+                    'name' => $faker->name,
+                    'address' => $faker->address,
+                    'phone' => $faker->phoneNumber,
+                    'email' => $faker->unique()->safeEmail,
+                    // 'status_id' => $faker->numberBetween(1, 2), 
+                    // 'role_id' => $faker->numberBetween(1, 2), 
+             ]);
+        }
         // for ($i = 0; $i < 10; $i++) {
         //     Status::create([
         //         'status_code' => $faker->randomNumber(), 

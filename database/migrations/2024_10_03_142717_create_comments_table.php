@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('content');
             $table->dateTime('content_date');
-            
+            $table->foreignId('user_id')->constrained('accounts');
             $table->timestamps();
         });
     }

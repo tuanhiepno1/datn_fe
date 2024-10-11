@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('address');
             $table->string('phone');
             $table->string('email')->unique();
-            // $table->foreignId('status_id')->constrained('statuses');
-            // $table->foreignId('role_id')->constrained('roles');
+             $table->foreignId('status_id')->constrained('statuses');
+             $table->foreignId('role_id')->constrained('roles');
             $table->timestamps();
         });
     }
