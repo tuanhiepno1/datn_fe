@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 
 class AccountController extends Controller
 {
+    
     //Lấy danh sách tài khoản
     public function index()
     {
@@ -59,7 +60,7 @@ class AccountController extends Controller
             return response()->json([
                 'status'  => 'HTTP OK',
                 'message' => 'Data stored successfully in the database',
-            ], 201);
+            ], status: 201);
     
         } catch (\Exception $e) {
             // Xử lý lỗi nếu có ngoại lệ
@@ -67,7 +68,7 @@ class AccountController extends Controller
                 'status'  => 'HTTP INTERNAL_SERVER_ERROR',
                 'message' => 'Failed to store data in the database',
                 'error'   => $e->getMessage(),
-            ], 500);
+            ], status: 500);
         }
     }
     

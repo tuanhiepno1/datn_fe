@@ -45,7 +45,14 @@ return [
             'provider' => 'users',
         ],
     ],
-
+    'accounts' => [
+        'driver' => 'session',
+        'provider' => 'accounts',
+    ],
+    'accounts-api' => [
+        'driver' => 'token',
+        'provider' => 'accounts',
+    ],
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -68,7 +75,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
+        'accounts' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Account::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

@@ -1,51 +1,49 @@
 <?php 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Requests\Authrequest;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
+use Dotenv\Exception\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+
 class AuthController extends Controller
 {
-    public function __construct(){
-        // Đảm bảo bạn bật middleware này cho các route cần xác thực
-        // $this->middleware('auth:api', ['except' => ['login']]);
+    public function  getLogin(){
+        return view('login'); 
     }
 
-    public function login(Authrequest $request)
+   
+    public function postLogin(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(
-            ['error' => 'Tài khoản hoặc mật khẩu không chính xác'],
-            Response::HTTP_UNAUTHORIZED);
+        try{ 
+
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+
+            $credentials = [
+                'email' => $request->email,
+                'password' => $request->password,
+            ];
+
+            if(Auth::guard('accounts')->attempt($credentials, $request->filled('remember'))) {
+                // Xử lý sau khi đăng nhập thành công (ví dụ: chuyển hướng đến trang chủ)
+                return redirect()->intended('/')->with('success', 'Đăng nhập thành công!'); 
+            }
+
+            // Đăng nhập thất bại
+            throw ValidationException::withMessages([
+                'email' => [trans('auth.failed')], 
+            ]);
+
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
-
-        $user = auth()->user();
-
-
-        // Tạo cookie chứa token
-        $cookie = Cookie::make('access_token',
-        $token, 
-        auth()->factory()->getTTL(), '/', null, false, true);        
-        // Trả về phản hồi với token và cookie
-        return $this->respondWithToken($token, $user)->withCookie($cookie);
-    }
-    protected function respondWithToken($token,  $user)
-    {
-        return response()->json([
-            'user' => new UserResource($user),
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL()
-        ]);
-    }
-    public function me(){
-        return response()->json(
-            new UserResource(auth()->user()) );     
     }
 }
