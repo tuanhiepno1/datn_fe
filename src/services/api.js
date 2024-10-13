@@ -45,22 +45,22 @@ api.interceptors.response.use(
 
 // Hàm đăng nhập
 export const login = (credentials) => {
-    return api.post('/accounts/login', credentials);
+    return api.post('/v1/auth/login', credentials);
 };
 
 // Hàm đăng ký
 export const register = (userData) => {
-    return api.post('/accounts/register', userData);
+    return api.post('/accounts', userData);
 };
 
 // Hàm lấy thông tin tài khoản hiện tại
 export const getCurrentUser = () => {
-    return api.get('/accounts/me');
+    return api.get('/v1/auth/me');
 };
 
 // Hàm đăng xuất
 export const logout = () => {
-    return api.post('/accounts/logout');
+    return api.post('/v1/auth/logout');
 };
 
 // Hàm lấy danh sách tài khoản (ví dụ)
@@ -77,5 +77,3 @@ export const updateUser = (id, updatedData) => {
 export const deleteUser = (id) => {
     return api.delete(`/accounts/${id}`);
 };
-
-// Các API khác có thể được thêm tương tự ở đây

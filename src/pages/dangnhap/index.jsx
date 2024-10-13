@@ -8,28 +8,53 @@ const { TabPane } = Tabs;
 
 const LoginRegister = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingRegister, setLoadingRegister] = useState(false);
 
     const onFinishLogin = async (values) => {
         setLoading(true);
         try {
-            const response = await login(values);
+            const response = await login({
+                email: values.email, // Change 'username' to 'email'
+                password: values.password
+            });
             localStorage.setItem('token', response.data.token); // Lưu token vào localStorage
             message.success('Đăng nhập thành công!');
             // Chuyển hướng tới trang chính hoặc trang bạn muốn sau khi đăng nhập
         } catch (error) {
             message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+            console.error('Login error: ', error.response.data); // Log error response
         } finally {
             setLoading(false);
         }
     };
+    
 
     const onFinishRegister = async (values) => {
+        setLoadingRegister(true);
+
+        if (values.password !== values.confirmPassword) {
+            message.error('Mật khẩu không khớp!');
+            setLoadingRegister(false);
+            return;
+        }
+
+        // Tạo FormData từ dữ liệu đã nhập
+        const formData = new FormData();
+        formData.append('username', values.username); // thêm trường username
+        formData.append('password', values.password); // thêm trường password
+        formData.append('name', values.name); // thêm trường name
+        formData.append('address', values.address); // thêm trường address
+        formData.append('phone', values.phone); // thêm trường phone
+        formData.append('email', values.email); // thêm trường email
+
         try {
-            await register(values);
+            await register(formData); // Gửi formData thay vì values
             message.success('Đăng ký thành công! Vui lòng đăng nhập.');
             // Bạn có thể chuyển hướng đến tab đăng nhập hoặc trang bạn muốn
         } catch (error) {
             message.error('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
+        } finally {
+            setLoadingRegister(false);
         }
     };
 
@@ -129,7 +154,7 @@ const LoginRegister = () => {
                                 onFinish={onFinishLogin}
                             >
                                 <Form.Item
-                                    name="username"
+                                    name="email"
                                     rules={[{ required: true, message: 'Vui lòng nhập Email!' }]}
                                     style={formItemStyle}
                                 >
@@ -173,7 +198,15 @@ const LoginRegister = () => {
                                 </Form.Item>
 
                                 <Form.Item
-                                    name="fullName"
+                                    name="username" // Thêm trường username
+                                    rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
+                                    style={formItemStyle}
+                                >
+                                    <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" style={inputStyle} />
+                                </Form.Item>
+
+                                <Form.Item
+                                    name="name"
                                     rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
                                     style={formItemStyle}
                                 >
@@ -182,14 +215,14 @@ const LoginRegister = () => {
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                                     <Form.Item
-                                        name="phoneNumber"
+                                        name="phone" // Thêm trường phone
                                         rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
                                         style={{ flexBasis: '48%', ...formItemStyle }} // Cột 1
                                     >
                                         <Input prefix={<PhoneOutlined />} placeholder="Số điện thoại" style={inputStyle} />
                                     </Form.Item>
                                     <Form.Item
-                                        name="address"
+                                        name="address" // Thêm trường address
                                         rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
                                         style={{ flexBasis: '48%', ...formItemStyle }} // Cột 2
                                     >
@@ -214,7 +247,7 @@ const LoginRegister = () => {
                                 </Form.Item>
 
                                 <Form.Item>
-                                    <Button type="primary" htmlType="submit" style={buttonStyle}>
+                                    <Button type="primary" htmlType="submit" style={buttonStyle} loading={loadingRegister}>
                                         Đăng ký
                                     </Button>
                                 </Form.Item>
