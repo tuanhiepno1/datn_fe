@@ -50,7 +50,7 @@ export const login = (credentials) => {
 
 // Hàm đăng ký
 export const register = (userData) => {
-    return api.post('/accounts', userData);
+    return api.post('/admin/accounts', userData);
 };
 
 // Hàm lấy thông tin tài khoản hiện tại
