@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Tabs, Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, HomeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { login, register } from '@services/api'; // Đường dẫn tới file API
+import { login, register } from '@services/api'; 
 
 const { TabPane } = Tabs;
 
@@ -10,24 +10,31 @@ const LoginRegister = () => {
     const [loading, setLoading] = useState(false);
     const [loadingRegister, setLoadingRegister] = useState(false);
 
+
     const onFinishLogin = async (values) => {
         setLoading(true);
         try {
             const response = await login({
-                email: values.email, // Change 'username' to 'email'
+                email: values.email,
                 password: values.password
             });
-            localStorage.setItem('token', response.data.token); // Lưu token vào localStorage
+
+            // Lưu token vào localStorage
+            localStorage.setItem('token', response.data.token);
             message.success('Đăng nhập thành công!');
-            // Chuyển hướng tới trang chính hoặc trang bạn muốn sau khi đăng nhập
+
+            // Chuyển hướng tới trang chính sau khi đăng nhập thành công
+            window.location.href = '/';  // Ví dụ chuyển hướng đến trang chính
         } catch (error) {
+            // Thông báo lỗi khi đăng nhập thất bại
             message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-            console.error('Login error: ', error.response.data); // Log error response
+            console.error('Login error: ', error.response ? error.response.data : error.message);
         } finally {
             setLoading(false);
         }
     };
-    
+
+
 
     const onFinishRegister = async (values) => {
         setLoadingRegister(true);
@@ -40,7 +47,6 @@ const LoginRegister = () => {
 
         // Tạo FormData từ dữ liệu đã nhập
         const formData = new FormData();
-        formData.append('username', values.username); // thêm trường username
         formData.append('password', values.password); // thêm trường password
         formData.append('name', values.name); // thêm trường name
         formData.append('address', values.address); // thêm trường address
@@ -195,14 +201,6 @@ const LoginRegister = () => {
                                     style={formItemStyle}
                                 >
                                     <Input prefix={<MailOutlined />} placeholder="Email" style={inputStyle} />
-                                </Form.Item>
-
-                                <Form.Item
-                                    name="username" // Thêm trường username
-                                    rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
-                                    style={formItemStyle}
-                                >
-                                    <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" style={inputStyle} />
                                 </Form.Item>
 
                                 <Form.Item

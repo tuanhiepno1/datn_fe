@@ -45,7 +45,7 @@ api.interceptors.response.use(
 
 // Hàm đăng nhập
 export const login = (credentials) => {
-    return api.post('/v1/auth/login', credentials);
+    return api.post('/V1/auth/login', credentials);
 };
 
 // Hàm đăng ký
